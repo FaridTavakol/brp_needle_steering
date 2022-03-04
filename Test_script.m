@@ -32,7 +32,7 @@ global T;
 T = 0.005;
 
 % Simulation configuration
-simulationTime = 10;       %second
+simulationTime = 20;       %second
 time = 0:T:simulationTime;  % simulation run time
 numberOfIterations = simulationTime/T + 1;
 
@@ -58,12 +58,12 @@ FramePos(1:3,1) =  Gab(1:3,4,1)';
 
 % Configuration
 
-w_max =deg2rad(100);   % Max rotation speed of needle in deg/sec
+w_max = deg2rad(100);   % Max rotation speed of needle in deg/sec
 c = 20;         % Need to optimize the gaussian width, this is a tuning parameter
 
 
 theta = zeros(1,numberOfIterations);   % Initial steering direction angle
-theta(1) = 0.01;
+theta(1) = 0.0;
 RotationSpeed = zeros(1,numberOfIterations);
 w_hat = zeros(1,numberOfIterations);
 TotalInsertionDistance = zeros(1,numberOfIterations);
@@ -72,14 +72,14 @@ TotalInsertionDistance = zeros(1,numberOfIterations);
 theta_d = pi;   % Desired steering direction (0 - 360) (0 is in y-z plane)
 alpha = 0.9;     % Steering effort (0 - 1), 0: straight, 1 curved
 % Could also add a rotation speed parameter to override w_max
-
+flag =0;
 for i = 1:numberOfIterations
     % Calculate the desired set point position 'theta(k+1)'
     % for the current servo loop interval
     %% NEED TO TAKE INTO ACCOUNT 0/360 DEGREE CROSSING
-        
-%     w_hat(i) = 1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
-%     w_hat(i) = sin(theta(i)- 0.5*pi)/2 + 0.7;%1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
+    
+    %     w_hat(i) = 1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
+    %     w_hat(i) = sin(theta(i)- 0.5*pi)/2 + 0.7;%1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
     w_hat(i) = 0;
     
     
@@ -87,19 +87,22 @@ for i = 1:numberOfIterations
     RotationSpeed(i) = w_hat(i) * w_max;
     
     % Determine angle for the next iteration
-%     theta(i+1) = theta(i) + RotationSpeed(i) * T;
-%     if(theta(i+1) > 2*pi)
-%         theta(i+1) = theta(i+1) - (2*pi);
-%     end
     theta(i+1) = theta(i) + RotationSpeed(i) * T;
+    if(theta(i+1) > 2*pi)
+        theta(i+1) = theta(i+1) - (2*pi);
+    end
     
-    % Change in the insertion
     u1 = insertionSpeed * T;
-    TotalInsertionDistance(i+1) = TotalInsertionDistance(i) + u1;
-    % Change in the angle
     u2 = RotationSpeed(i) * T;
+    % Change in the insertion
+    if i>numberOfIterations/3 && flag ==0
+        u1 = 0;
+        u2 = pi;
+        flag =1;
+    end
+    TotalInsertionDistance(i+1) = TotalInsertionDistance(i) + u1;
     % Calculating the kinematics using nonholonomic bicycle model
-    [Gab(:,:,i+1), needleTipPos(:,:,i+1)] = bicycleKinematicsModelOneIteration(Gab(:,:,i), u1, u2, T);
+    [Gab(:,:,i+1), needleTipPos(:,:,i+1)] = bicycleKinematicsModelOneIteration(Gab(:,:,i), u1, u2);
     FramePos(:,:,i+1) = Gab(1:3,4,i+1);
     
 end
@@ -141,7 +144,7 @@ grid on
 xlabel('z(mm)')
 ylabel('y(mm)')
 title('simulated trajectory')
-% legend('tip','frame')
+legend('tip','frame')
 % axis equal
 
 
