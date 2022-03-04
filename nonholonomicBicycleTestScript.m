@@ -68,20 +68,13 @@ RotationSpeed = zeros(1,numberOfIterations);
 w_hat = zeros(1,numberOfIterations);
 TotalInsertionDistance = zeros(1,numberOfIterations);
 
-% Command inputs, would come from higher level java control loop
-theta_d = pi;   % Desired steering direction (0 - 360) (0 is in y-z plane)
-alpha = 0.9;     % Steering effort (0 - 1), 0: straight, 1 curved
 % Could also add a rotation speed parameter to override w_max
 flag =0;
+maxAllowableInsertion = 1e5;
 for i = 1:numberOfIterations
     % Calculate the desired set point position 'theta(k+1)'
     % for the current servo loop interval
     %% NEED TO TAKE INTO ACCOUNT 0/360 DEGREE CROSSING
-    
-    %     w_hat(i) = 1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
-    %     w_hat(i) = sin(theta(i)- 0.5*pi)/2 + 0.7;%1 - alpha * exp(-(theta(i)-theta_d)^2 / (2*c^2));
-    w_hat(i) = 0;
-    
     
     % w = w_max * w^
     RotationSpeed(i) = w_hat(i) * w_max;
@@ -100,7 +93,16 @@ for i = 1:numberOfIterations
         u2 = pi;
         flag =1;
     end
+    if i>.7*numberOfIterations && flag==1
+        u1 = 0;
+        u2 = -2*pi;
+        flag =2;
+    end
     TotalInsertionDistance(i+1) = TotalInsertionDistance(i) + u1;
+   % Statement to stop insertion after reaching some desired insertion
+    if TotalInsertionDistance(i) > maxAllowableInsertion
+        break;
+    end
     % Calculating the kinematics using nonholonomic bicycle model
     [Gab(:,:,i+1), needleTipPos(:,:,i+1)] = bicycleKinematicsModelOneIteration(Gab(:,:,i), u1, u2);
     FramePos(:,:,i+1) = Gab(1:3,4,i+1);
@@ -125,6 +127,9 @@ ylabel('Rotation Speed (rad/sec)')
 %Plot Trajectory
 figure(2);
 hold on;
+
+% needleTipPos(1,1:end) = 0;
+% FramePos(1,:)= 0
 plot3(needleTipPos(1,1:end),needleTipPos(2,1:end), needleTipPos(3,1:end), 'r','Linewidth',2);
 plot3(FramePos(1,:), FramePos(2,:), FramePos(3,:), 'b','Linewidth',2);
 grid on
