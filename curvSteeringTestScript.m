@@ -32,7 +32,7 @@ global T;
 T = 0.005;
 
 % Simulation configuration
-simulationTime = 20;       %second
+simulationTime = 8;       %second
 time = 0:T:simulationTime;  % simulation run time
 numberOfIterations = simulationTime/T + 1;
 
