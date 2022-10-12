@@ -44,12 +44,6 @@ needleTipPos(:,:,1) = [0;0;0];
 Gab = zeros(4,4, 1);
 Gab(4,4,:) = 1;
 
-% Gab(:,:,1) = [1 0 0 0;...
-%     0 1 0 0;...
-%     0 0 1 0;...
-%     0 0 0 1];
-
-% beta = 4.15; % initial entry angle (roll) in degrees
 Gab(:,:,1) = [1 0 0 0;...
     0 cosd(beta) -sind(beta) 0;...
     0 sind(beta) cosd(beta) 0;...
@@ -93,17 +87,17 @@ end
 FramePos(2,:) = -1 * FramePos(2,:);
 plot(FramePos(3,:), FramePos(2,:),'Linewidth',3, 'DisplayName',append('Simulated needle with pitch of ',int2str(beta)));
 
-%% Evaluate the resultign plot
-nx=FramePos(3,1:i)';
-ny=FramePos(2,1:i)';
-n = [nx,ny];
-result = CircleFitByPratt(n);
-radius = result(3);
-center = [result(1), result(2)];
-curv =1/radius;
-disp("Curvature of simulated needle: ");
-disp(curv);
-circle(center(1),center(2),radius, append('sim fit circle pitch of ',int2str(beta)));
+%% Evaluate the resulting plot
+% nx=FramePos(3,1:i)';
+% ny=FramePos(2,1:i)';
+% n = [nx,ny];
+% result = CircleFitByPratt(n);
+% radius = result(3);
+% center = [result(1), result(2)];
+% curv =1/radius;
+% disp("Curvature of simulated needle: ");
+% disp(curv);
+% circle(center(1),center(2),radius, append('sim fit circle pitch of ',int2str(beta)));
 
 
 %% Function for plotting a circle
