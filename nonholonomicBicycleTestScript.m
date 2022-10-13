@@ -85,8 +85,9 @@ end
 
 %Plot Trajectory
 FramePos(2,:) = -1 * FramePos(2,:);
-plot(FramePos(3,:), FramePos(2,:),'Linewidth',3, 'DisplayName',append('Simulated needle with pitch of ',int2str(beta)));
-
+if flag
+    plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color','r','DisplayName',append('Simulated needle with pitch of ',num2str(beta)));
+end
 %% Evaluate the resulting plot
 % nx=FramePos(3,1:i)';
 % ny=FramePos(2,1:i)';
