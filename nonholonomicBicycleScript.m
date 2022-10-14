@@ -1,11 +1,3 @@
-% Testing the CURV steering approach
-% clc;
-% clear;
-% close all;
-
-% phi = 0.1984;   %constant front wheel angle, radians, 0.1984*180/pi=11.34deg
-% k = -1/sqrt(l2^2+(l1*cot(phi))^2)   %curvature (1/r) or k= tan(phi)/l1
-
 % Unit Vectors
 global e1;
 e1 = [1;0;0];
@@ -53,16 +45,9 @@ FramePos = zeros(3, 1, 1);
 FramePos(1:3,1) =  Gab(1:3,4,1)';
 
 % Configuration
-insertionSpeed = 10;      % mm/s
-w_max = 0;%deg2rad(360*2);   % Max rotation speed of needle in deg/sec
-c = 20;         % Need to optimize the gaussian width, this is a tuning parameter
+insertionSpeed = 10; % mm/s
+w_max = 0;%
 
-
-% theta = zeros(1,numberOfIterations);   % Initial steering direction angle
-% theta(1) = 0.0;
-% RotationSpeed = zeros(1,numberOfIterations);
-% w_hat = zeros(1,numberOfIterations);
-% TotalInsertionDistance = zeros(1,numberOfIterations);
 
 %% Could also add a rotation speed parameter to override w_max
 i = 1;
@@ -88,18 +73,6 @@ FramePos(2,:) = -1 * FramePos(2,:);
 if flag
     plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color','r','DisplayName',append('Simulated needle with pitch of ',num2str(beta)));
 end
-%% Evaluate the resulting plot
-% nx=FramePos(3,1:i)';
-% ny=FramePos(2,1:i)';
-% n = [nx,ny];
-% result = CircleFitByPratt(n);
-% radius = result(3);
-% center = [result(1), result(2)];
-% curv =1/radius;
-% disp("Curvature of simulated needle: ");
-% disp(curv);
-% circle(center(1),center(2),radius, append('sim fit circle pitch of ',int2str(beta)));
-
 
 %% Function for plotting a circle
 function h = circle(x,y,r, name)
