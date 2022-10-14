@@ -1,4 +1,4 @@
-function [x,y,actual_insertion] = sim_needle_insertion(entry_point,z_tgt,beta,curvature, plot_flag)
+function [x,y,actual_insertion] = sim_needle_insertion(entry_point,z_tgt,beta,curvature, plot_flag, dispName)
 % Unit Vectors
 global e1;
 e1 = [1;0;0];
@@ -45,7 +45,7 @@ while FramePos(3,1,i) <= z_tgt
 end
 x = FramePos(3,:);y = FramePos(2,:);
 if plot_flag
-    plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color',rand(1,3),'DisplayName',append('Simulated needle with pitch of ',num2str(beta)));
+    plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color',rand(1,3),'DisplayName',dispName);
 end
 end
 
