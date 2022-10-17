@@ -44,8 +44,12 @@ while FramePos(3,1,i) <= z_tgt
     i=i+1;
 end
 x = FramePos(3,:);y = FramePos(2,:);
+all_marks = {'o','+','*','.','x','s','d','h'};
 if plot_flag
-    plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color',rand(1,3),'DisplayName',dispName);
+    plot(FramePos(3,:), FramePos(2,:),'Linewidth',3,'color',rand(1,3),...
+        'DisplayName',dispName,'Marker',all_marks{randi(length(all_marks))},...
+        'MarkerFaceColor',rand(1,3),'MarkerEdgeColor',rand(1,3),'MarkerSize',8,...
+        'MarkerIndices',length(y):length(y));
 end
 end
 
